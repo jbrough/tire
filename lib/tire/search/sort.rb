@@ -15,7 +15,7 @@ module Tire
       def geo(location)
         @value <<  {
           '_geo_distance' => {
-            'location' => location,
+            location.keys.first => location.values.first,
             'order'=> 'asc',
             'unit' => 'km'
           }
