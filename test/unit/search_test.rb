@@ -325,6 +325,7 @@ module Tire
 
       end
 
+
       context "with from/size" do
 
         should "set the values in request" do
@@ -444,6 +445,46 @@ module Tire
 
           assert_equal( { 'query_string' => { 'query' => 'foo' } }, query['should'].first)
           assert_equal( { 'terms' => { 'tags' => ['baz'] } }, query['must'].last)
+        end
+
+      end
+
+      context "groupField queries" do
+
+        should "set not set the group_field value in request" do
+          s = Search::Search.new('index')
+          hash = MultiJson.decode( s.to_json )
+          assert_nil hash['groupField']
+        end
+
+        should "set the group_field value in request" do
+          s = Search::Search.new('index',  :group_field => 'foo')
+          hash = MultiJson.decode( s.to_json )
+          assert_equal 'foo', hash['groupField']
+        end
+
+        should "set the group_field value in options" do
+          Results::Collection.any_instance.stubs(:total).returns(50)
+          s = Search::Search.new('index', :group_field => 'foo')
+          assert_equal 'foo', s.options[:group_field]
+        end
+
+      end
+
+      context "sort by geo location" do
+        should "build a request sorted by location" do
+          s = Tire::Search::Search.new('index')
+          s.sort { geo 'geohash' }
+          body = JSON.parse(s.to_json)
+          assert_equal true, body.has_key?('sort')
+          assert_equal 1, body['sort'].size
+          geo = body['sort'].first
+          assert_equal true, geo.has_key?('_geo_distance')
+          loc = geo['_geo_distance']
+          assert_equal true, loc.has_key?('location')
+          assert_equal true, loc.has_key?('order')
+          assert_equal true, loc.has_key?('unit')
+          assert_equal 'geohash', loc['location']
         end
 
       end

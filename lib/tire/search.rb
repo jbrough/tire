@@ -118,6 +118,7 @@ module Tire
           request.update( { :highlight => @highlight.to_hash } ) if @highlight
           request.update( { :size => @size } )               if @size
           request.update( { :from => @from } )               if @from
+          request.update( { :groupField => @options[:group_field] } ) if options[:group_field]
           request.update( { :fields => @fields } )           if @fields
           request.update( { :version => @version } )         if @version
           request.update( { :explain => @explain } )         if @explain

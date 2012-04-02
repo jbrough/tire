@@ -12,6 +12,16 @@ module Tire
         self
       end
 
+      def geo(location)
+        @value <<  {
+          '_geo_distance' => {
+            'location' => location,
+            'order'=> 'asc',
+            'unit' => 'km'
+          }
+        }
+      end
+
       def to_ary
         @value
       end
