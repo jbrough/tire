@@ -2,10 +2,11 @@ module Tire
   class MultiSearch
     include Enumerable
     attr_accessor :searches, :results, :options, :response, :json
-    def initialize(searches=[], specified_options={})
+    def initialize(searches, specified_options={})
       default_options = {}
       @options = default_options.merge(specified_options)
       @searches = []
+      searches.each {|search| add search }
     end
     def add(o)
       @searches << o if o.instance_of?(Tire::Search::Search) && !include?(o)
